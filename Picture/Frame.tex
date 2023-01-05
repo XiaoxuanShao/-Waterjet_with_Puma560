@@ -1,0 +1,285 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%   Xiaoxuan Shao  %%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%   Southeast University  %%%%%%%%%%%%%%%%%
+%%%%%%%%%   SyrinxSHAW@outlook.com  %%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%环境%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    \documentclass[9pt]{beamer}
+    \usepackage{amsmath}
+    \usepackage{mathdots}
+    \usepackage{graphicx}
+    \usepackage{float}
+    \usepackage{multirow}
+    \usepackage{geometry}
+    \usepackage[UTF8]{inputenc}
+    \usepackage{CJK}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%%%%%%%%%%%%%%%%或许用到的remark%%%%%%%%%%%%%%%%%%%
+%\vspace{0.4cm}    ←强制间距
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%%%%%%%%%%%%%%%%引入Beamer%%%%%%%%%%%%%%%%%%%%%%%%%
+\usetheme{Madrid} %主题
+%\usecolortheme{beaver} %颜色
+\usefonttheme{structuresmallcapsserif} %字体
+\pgfdeclareimage[height=1.5cm]{logo}{logo}
+\logo{\pgfuseimage{logo}}
+
+%%%%%%%%%%%%% 定义颜色 映射是x/256%%%%%%%%%%%%%%%%%
+\definecolor{GoodBlue}{rgb}{0.30,0.55,0.65} %蓝
+\definecolor{LightGreen}{rgb}{0.45, 0.65, 0.60} %灰绿
+%\definecolor{mygrey}{rgb}{0.52, 0.52, 0.51} % 灰色
+%\colorlet{main}{NormBlue!60!white}
+%\colorlet{goodblue}{GoodBlue!50!white}
+%\colorlet{text}{bistre!100!white}
+
+
+%%指定不同颜色，fg是本身颜色，bg是背景颜色，!num!改变数值提供渐变色
+\setbeamercolor{title}{fg=white,bg=GoodBlue!95!black}
+\setbeamercolor{frametitle}{fg=white,bg=GoodBlue!75!black}
+\setbeamercolor{section in toc}{fg=black}
+\setbeamercolor{normal text}{fg=GoodBlue!30!black}
+%\setbeamercolor{block title}{bg=mygrey!14!white}
+%\setbeamercolor{block body}{fg=black,bg=mygrey!10!white}
+\setbeamercolor{math text}{fg=GoodBlue!30!black}
+\setbeamercolor{author in head/foot}{fg=white, bg=GoodBlue!55!black}
+\setbeamercolor{title in head/foot}{fg=white, bg=GoodBlue!60!black}
+\setbeamercolor{structure}{fg=GoodBlue!70!black}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\title[Robotics Curriculum Presentation]{Simulation on 2-DOF Waterjet with PUMA560 Robot}
+\author{Xiaoxuan SHAO}
+\institute{\textsc{Southeast University}}
+\date{\today}
+
+
+\begin{document}
+
+\begin{CJK}{GBK}{hei}
+\AtBeginSection[]
+{
+\begin{frame}
+    \frametitle{Table of Contents}
+    \tableofcontents[currentsection]
+\end{frame}
+}
+
+\begin{frame}
+	\title{Simulation on 2-DOF Waterjet with PUMA560 Robot}
+ 	\subtitle{Processed by MATLAB Robotics Toolbox}
+	\author{\textsc{Xiaoxuan SHAO}}
+    \institute{\large \textsc{Southeast University}}
+	\date{\textsc{\today}}
+	\titlepage
+\end{frame}
+
+\section{Introduction and Recall}
+
+\begin{frame}{Introduction to Robotics Toolbox}{Helpful Tool for simulation}
+
+As an important toolbox of MATLAB, Robotics Toolbox is tactful to handle problems such as build robot model, trajectory planning, joint torque control.
+To create a robot in toolbox is like:
+
+   \begin{figure}   %d单张插图
+    \centering %居中
+    \includegraphics[width =0.8\textwidth]{first_step.jpg}
+    \caption{A very simple example}
+    \label{fig:label}
+   \end{figure}
+
+As an important industrial robot, PUMA560 is already set up in \\
+Robotics Toolbox. We can build a PUMA560 by
+        "mdl\_puma560"
+\end{frame}
+
+
+\begin{frame}{Introduction to Robotics Toolbox}{Helpful Tool for simulation}
+
+By applying consoled functions, we can
+    \begin{itemize}
+        \item Solve forward kinematics by "fkine"
+        \item Solve inverse kinematics by "ikine"
+        \item Output simulation images by "robot.plot(q)"
+    \end{itemize}
+    \begin{figure}
+    \centering
+     \includegraphics[width=0.8\textwidth]{planning.jpg}\\
+     \caption{trajectory planning and control}\label{trajectory planning and control}
+\end{figure}
+
+
+\end{frame}
+
+
+\begin{frame}{Recall the Main Theme of This Project}{By Recalling a Great Example}
+
+Simulate a robot that travels at the contour of a specific image.
+    \begin{itemize}
+    \item Based on image recognition
+    \item Obtain the required cutting figure contour
+    \item Perform path planning to determine the pose of the end joint point
+    \end{itemize}
+
+\begin{figure}
+  \centering
+  % Requires \usepackage{graphicx}
+  \includegraphics[width=0.8\textwidth]{waterjet.jpg}\\
+  \caption{waterjet model}\label{waterjet model}
+\end{figure}
+    
+\end{frame}
+
+\begin{frame}{Recall the Main Theme of This Project}{Build a Model of Waterjet}
+
+Calculate the tangent line of the position of discrete points:\\
+z-axis is always perpendicular to the cutting plane\\
+x-axis is always tangent to the cutting curve
+
+\vspace{0.1cm}
+Advantage:
+\begin{itemize}
+  \item When the cutting material changes, do not need to change the posture or inverse kenematics
+  \item Arm in charge of curve, waterjet in charge of quality 
+\end{itemize}
+
+\begin{figure}
+  \centering
+  % Requires \usepackage{graphicx}
+  \includegraphics[width=0.3\textwidth]{head}\\
+\end{figure}
+
+\end{frame}
+
+
+\section{My Own Simulation with PUMA560 Robot}
+\begin{frame}{How Do I Achieve My Goal}{Applying MATLAB Toolbox}
+
+To solve the problem, I divided the codes into following parts:
+    \begin{enumerate}[1)]
+    \item Build a PUMA 560
+    \item Initialize all parameters(for visualization usage)
+    \item Import image and obtain contour
+    \item Trajectory planning and output
+    \item Postprocessing and visualization
+    \end{enumerate}
+
+\vspace{0.3cm}
+And following I will introduce part 3), 4) in detail.
+
+\end{frame}
+
+\begin{frame}{How Do I Achieve My Goal}{Import image and obtain contour}
+
+  \begin{columns}
+    \begin{column}{0.7\linewidth}        %改一下 不要放代码 箭头 从图到轮廓
+        \begin{figure}
+        \begin{center}
+        \includegraphics[width =0.9\textwidth]{input.jpg}
+        \end{center}
+        \end{figure}
+    \end{column}
+
+    \begin{column}{0.6\linewidth}
+    \begin{itemize}
+      \item Read image "star"
+      \item Get image boundary
+      \item Plot contour to screen
+    \end{itemize}
+    \end{column}
+
+  \end{columns}
+\end{frame}
+
+\begin{frame}{How Do I Achieve My Goal}{Trajectory planning and output}
+\begin{columns}
+    \begin{column}{0.7\linewidth}
+        \begin{figure}
+        \begin{center}
+        \includegraphics[width =0.9\textwidth]{plan.jpg}
+        \end{center}
+        \end{figure}
+    \end{column}
+
+    \begin{column}{0.6\linewidth}
+    \begin{itemize}
+      \item Grasp contour points
+      \item Compute rotate angle
+      \item Inverse kinematics
+      \item Output on screen
+    \end{itemize}
+    \end{column}
+
+  \end{columns}
+\end{frame}
+
+
+\section{Conclusion and Discussion}
+\begin{frame}{Simulation on Different Shapes}{A Cross Shape Picture}
+    \begin{figure}
+    \centering
+    \includegraphics[width=0.9\linewidth]{cross.jpg}
+    \caption{To simulate a cross}
+    \label{To simulate a cross}
+    \end{figure}
+\end{frame}
+
+\begin{frame}{Simulation on Different Shapes}{A Star Shape Picture}
+    \begin{figure}
+    \centering
+    \includegraphics[width=0.9\linewidth]{star.jpg}
+    \caption{To simulate a star}
+    \label{To simulate a star}
+    \end{figure}
+\end{frame}
+
+\begin{frame}{Simulation on Different Shapes}{A Heart Shape Picture}
+    \begin{figure}
+    \centering
+    \includegraphics[width=0.9\linewidth]{heart.jpg}
+    \caption{To simulate a heart}
+    \label{To simulate a heart}
+    \end{figure}
+\end{frame}
+
+\begin{frame}{Simulation on Different Shapes}{A Car Shape Picture}
+    \begin{figure}
+    \centering
+    \includegraphics[width=0.9\linewidth]{car.jpg}
+    \caption{To simulate a car}
+    \label{To simulate a car}
+    \end{figure}
+\end{frame}
+
+\begin{frame}{Simulation on Different Shapes}{4 GIF Images}
+
+    \begin{center}
+        \href{run:D:/-SEU/21-22-2/Robotics/Simulation/r_cross.gif}{CROSS}\\
+        \vspace{0.5cm}
+        \href{run:D:/-SEU/21-22-2/Robotics/Simulation/r_star.gif}{STAR}\\
+        \vspace{0.5cm}
+        \href{run:D:/-SEU/21-22-2/Robotics/Simulation/r_heart.gif}{HEART}\\
+        \vspace{0.5cm}
+        \href{run:D:/-SEU/21-22-2/Robotics/Simulation/r_car.gif}{CAR}\\
+    \end{center}
+\end{frame}
+
+\begin{frame}{Ending of my presentation}
+
+    \begin{center}
+    \huge\textsc{Thanks for Listening}
+
+    \vspace{1.4cm}
+
+    \normalsize \textsc{Xiaoxuan SHAO\\}
+    \vspace{0.4cm}
+    \normalsize \textsc{SyrinxSHAW@outlook.com}
+    \end{center}
+
+\end{frame}
+\end{CJK}
+
+\end{document}
